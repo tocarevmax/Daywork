@@ -1,0 +1,103 @@
+Tile
+ALL = []
+
+def initialize(bomb = false)
+  @flagged = false
+  @revealed = false
+  @bomb = bomb
+  ALL << self
+end
+
+attr_accessor :flagged, :bomb, :adjacent_bomb, :pos
+
+def assign_adj_bomb_count
+  itirate through each bomb after it was placed on the grid
+  @adjacent_bomb = count_adjacent_bombs
+end
+
+count_adjacent_bombs(pos)
+  for position [1,1]
+  x-1, x, x+1
+  y-1, y, y+1
+end
+
+Game
+def get_pos
+  pos = [0]
+  until valid_pos(pos)
+    p "please provide coordinates for a position [0, 0]"
+    pos = parse_pos(gets.chomp)
+  end
+
+  pos
+end
+
+def valid_pos?(pos)
+  return false if pos == [0]
+  x = pos.first
+  y = pos.last
+
+  if pos.first.between?()
+end
+
+def parse_pos(string_pos)
+  string_pos.split(",").map(&:to_i)
+end
+
+def get_move
+  input = nil
+  until input.downcase == "f" || input.downcase == "r"
+    p "would you like to flag (f) or reveal (r) at the position"
+    input = gets.chomp
+  end
+
+  input
+end
+
+def play_move
+  if board[pos].flagged && move == "f"
+    board[pos].flagged = false
+  elsif !board[pos].flagged && move == "f"
+    board[pos].flagged = true
+  end
+end
+
+def won?
+  all_not_bombs = Tile::ALL.select {|tile| ! tile.bomb }
+  all_not_bombs.all? {|not_bomb| not_bomb.revealed}
+end
+
+Board
+
+def initialize(board_size = 9)
+  @grid = Array.new(board_size) { Array.new(board_size) }
+end
+
+def generate_tiles
+  bomb_count = @grid.length ** 2 / 5
+  total_tiles = @grid.length ** 2
+  bomb_count.times do
+    Tile.new(true)
+  end
+  (total_tiles - bomb_count).times do
+    Tile.new
+  end
+end
+
+def place_tiles_on_grid
+  i = 0
+  shuffled_tiles = Tile::ALL.shuffle
+  @grid.each.with_index do |row, row_idx|
+    row.each.with_index do |col, col_idx|
+      @grid[row_idx][col_idx] = shuffled_tiles[i]
+      shuffled_tiles[i].pos = [[row_idx],[col_idx]]
+      i += 1
+    end
+  end
+  # current_tile.pos = [x,y]
+end
+
+def assign_adj_bomb_count
+  # itirate through each bomb after it was placed on the grid
+  @adjacent_bomb = count_adjacent_bombs
+end
